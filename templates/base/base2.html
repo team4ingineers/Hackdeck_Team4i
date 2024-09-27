@@ -46,7 +46,21 @@
                 <span class="text">Events</span>
             </a>
         </li>
-       
+        <li class="{% if '/events/gemini' in request.path %}active{% endif %}">
+            <a href="/events/gemini/">
+                <i class='bx bxs-brain'></i>
+                <span class="text">Event Planner Ai</span>
+            </a>
+        </li>
+        <li class="{% if '/events/group_discussion' in request.path %}active{% endif %}">
+            <a href="/events/group_discussion/">
+                <i class='bx bxs-brain'></i>
+                <span class="text">Group Discussion</span>
+            </a>
+        </li>
+
+    
+        
     <ul class="side-menu">
         <li class="{% if request.path == '/settings/' %}active{% endif %}">
             <a href="/settings/">
@@ -72,7 +86,7 @@
     <!-- CONTENT -->
     <section id="content">
         <!-- NAVBAR -->
-        <nav >
+        <nav>
             <i class='bx bx-menu'></i>
             <form action="#">
                 <div class="form-input">

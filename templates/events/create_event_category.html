@@ -1,9 +1,29 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base2.html' %}
+
 {% block title %}Create Event Category{% endblock title %}
 {% block breadcrumb %}Create Event Category{% endblock breadcrumb %}
 {% load crispy_forms_tags %}
 
 {% block content %}
+<div class="head-title">
+    <div class="left">
+        <h1>Dashboard</h1>
+        <ul class="breadcrumb">
+            <li>
+                <a href="#">Dashboard</a>
+            </li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li>
+                <a class="active" href="/events/event_catogery/">Event catogery</a>
+            </li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li>
+                <a class="active" href="#">Create event catogery</a>
+            </li>
+        </ul>
+    </div>
+   
+  </div>
     <div class="row">
         <div class="col-md-12">
             <div class="card">

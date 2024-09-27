@@ -22,5 +22,7 @@ urlpatterns = [
     path('search_event/', search_event, name='search-event'),
     path('create/', create_event, name='create'),
     path('event_catogery/',event_catogery, name='event_catogery'),
-     path('events_dashboard/',events_dashboard, name='events_dashboard'),
+    path('events_dashboard/',events_dashboard, name='events_dashboard'),
+    path('gemini/',gemini, name='gemini'),
+    path('group_discussion/',group_discussion, name='group_discussion'),
 ]

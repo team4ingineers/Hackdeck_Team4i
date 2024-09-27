@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+
+
+        <div class="head-title">
+            <div class="left">
+                <h1>Dashboard</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right'></i></li>
+                    <li>
+                        <a class="active" href="#">Home</a>
+                    </li>
+                </ul>
+            </div>
+            <a href="#" class="btn-download">
+                <i class='bx bxs-cloud-download'></i>
+                <span class="text">Download PDF</span>
+            </a>
+        </div>
+
+        <ul class="box-info">
+            <li>
+                <i class='bx bxs-calendar-check'></i>
+                <span class="text">
+                    <h3>66</h3>
+                    <p>Total Students</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bxs-group'></i>
+                <span class="text">
+                    <h3>60</h3>
+                    <p>Total Reports</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bxs-dollar-circle'></i>
+                <span class="text">
+                    <h3>70%</h3>
+                    <p>Avg Academy Rate</p>
+                </span>
+            </li>
+        </ul>
+{% endblock %}

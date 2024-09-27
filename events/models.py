@@ -127,4 +127,3 @@ class UserCoin(models.Model):
 
 
 
-
