@@ -474,3 +474,14 @@ def email_invitation(request):
     # Render the upload invitations template
     return render(request, 'events/upload_invitations.html')
 
+from django.http import FileResponse
+from django.conf import settings
+import os
+
+def download_excel_template(request):
+    # Path to the Excel template in the static directory
+    file_path = os.path.join(settings.BASE_DIR, 'static', 'standard_invitation.xlsx')  # Adjust the path as necessary
+
+    # Serve the file for download
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='standard_invitation.xlsx')
+

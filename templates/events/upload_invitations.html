@@ -48,11 +48,35 @@
     input[type="submit"]:hover {
         background: var(--dark-blue);
     }
+
+    .download-button {
+        background: var(--blue);
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .download-button:hover {
+        background: var(--dark-blue);
+    }
 </style>
 
 <div class="upload-title">
     <h1>Upload Invitations</h1>
 </div>
+<a href="{% url 'download_excel_template' %}" class="download-button">Download Standard Template</a>
+<script>
+    window.onload = function() {
+        if (confirm("Would you like to download the standard Excel template for invitations?")) {
+            window.location.href = "{% url 'download_excel_template' %}";
+        }
+    };
+</script>
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -71,4 +95,8 @@
 
     <input type="submit" value="Send Invitations">
 </form>
+
+<!-- Download button for the Excel template -->
+
+
 {% endblock %}
