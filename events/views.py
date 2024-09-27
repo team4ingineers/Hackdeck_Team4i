@@ -223,3 +223,11 @@ def search_event(request):
        }
        return render(request, 'events/event_list.html', context)
     return render(request, 'events/event_list.html')
+
+
+def event_catogery(request):
+    return render(request, 'event_catogery.html')
+
+
+def events_dashboard(request):
+    return render(request, 'events_dashboard.html')
