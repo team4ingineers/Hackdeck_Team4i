@@ -116,7 +116,7 @@ def create_event(request):
             created_updated(Event, request)
             event_image_form.save(commit=False)
             event_image_form.event_form = ef
-            event_image_form.save()
+            event_image_form.save() 
             
             event_agenda_form.save(commit=False)
             event_agenda_form.event_form = ef
@@ -366,3 +366,111 @@ def gemini(request):
 
 def group_discussion(request):
     return render(request, 'group_discussion.html')
+
+
+
+
+
+import os
+import pandas as pd
+from django.conf import settings
+from django.core.mail import EmailMessage
+from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+from django.utils.html import strip_tags
+
+def email_invitation(request):
+    if request.method == 'POST':
+        # File upload
+        excel_file = request.FILES.get('excel_file')
+        invitation_file = request.FILES.get('invitation_file')
+        email_subject = request.POST.get('email_subject')
+        email_body_template = request.POST.get('email_body')
+
+        if not excel_file or not invitation_file or not email_subject or not email_body_template:
+            return HttpResponse("Please upload all required fields and provide email content.")
+
+        # Save uploaded files
+        fs = FileSystemStorage()
+        excel_path = fs.save(excel_file.name, excel_file)
+        invitation_path = fs.save(invitation_file.name, invitation_file)
+
+        # Read the Excel file
+        try:
+            df = pd.read_excel(
+                os.path.join(settings.MEDIA_ROOT, excel_path),
+                sheet_name="Guests",
+                na_values="",
+                parse_dates=["Invitation Date"]
+            )
+        except Exception as e:
+            return HttpResponse(f"Error reading Excel file: {e}")
+
+        # Send email to each guest
+        for _, row in df.iterrows():
+            try:
+                guest_name = row['Guest Name']
+                guest_email = row['Guest Email ID']
+                invitation_date = row['Invitation Date'].strftime('%d-%m-%Y')
+                venue = row['Venue']
+                time = row['Time']
+
+                # Replace placeholders in email body
+                email_body = email_body_template.format(
+                    guest_name=guest_name,
+                    invitation_date=invitation_date,
+                    venue=venue,
+                    time=time
+                )
+
+                # HTML email content with a table for event details
+                html_body = f"""
+                <html>
+                <body>
+                    <p>{email_body}</p>
+
+                    <p><strong>Event Details:</strong></p>
+                    <table style="border: 1px solid #ddd; padding: 8px; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px;"><strong>Date:</strong></td>
+                            <td style="padding: 8px;">{invitation_date}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Time:</strong></td>
+                            <td style="padding: 8px;"><strong>{time}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px;"><strong>Venue:</strong></td>
+                            <td style="padding: 8px;"><strong>{venue}</strong></td>
+                        </tr>
+                    </table>
+
+                    <br>
+
+                    <p>Best Regards,<br>
+                    <strong>The Event Team</strong></p>
+                </body>
+                </html>
+                """
+
+                # Create the email message
+                email = EmailMessage(
+                    email_subject,
+                    html_body,
+                    settings.DEFAULT_FROM_EMAIL,  # Use a default email from settings
+                    [guest_email],
+                )
+                email.content_subtype = 'html'  # Set the email content type to HTML
+                email.attach_file(os.path.join(settings.MEDIA_ROOT, invitation_path))
+
+                email.send()
+                print(f"Invitation sent to {guest_email}")
+            except Exception as e:
+                print(f"Failed to send email to {guest_email}: {e}")
+
+        return HttpResponse("Invitations sent successfully!")
+
+    # Render the upload invitations template
+    return render(request, 'events/upload_invitations.html')
+

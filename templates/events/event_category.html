@@ -59,6 +59,9 @@
                                       <a class="btn btn-primary" href="{% url 'generate_qr_code' category.pk %}">
                                           <i class="fa fa-link"></i>
                                       </a>
+                                      <a class="btn btn-primary" href="{% url 'email_invitation'  %}">
+                                        <i class="fa fa-envelope"></i>
+                                    </a>
                                   </td>
                               </tr>
                             {% endfor %}

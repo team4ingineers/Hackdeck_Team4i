@@ -1,0 +1,74 @@
+{% extends 'base/base2.html' %}
+
+{% block title %}Upload Invitations{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom styles specific to the upload invitations page */
+    #content main .upload-title {
+        margin-bottom: 20px;
+    }
+
+    #content main .upload-title h1 {
+        font-size: 36px;
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    form {
+        background: var(--light);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input[type="file"],
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="submit"] {
+        background: var(--blue);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background: var(--dark-blue);
+    }
+</style>
+
+<div class="upload-title">
+    <h1>Upload Invitations</h1>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="excel_file">Excel File:</label>
+    <input type="file" name="excel_file" required><br>
+
+    <label for="invitation_file">Invitation PDF/Image:</label>
+    <input type="file" name="invitation_file" required><br>
+
+    <label for="email_subject">Email Subject:</label>
+    <input type="text" name="email_subject" required><br>
+
+    <label for="email_body">Email Body:</label>
+    <textarea name="email_body" rows="8" cols="50" required></textarea>
+    <small>Use placeholders like {guest_name}, {invitation_date}, {time}, and {venue} for dynamic content.</small><br>
+
+    <input type="submit" value="Send Invitations">
+</form>
+{% endblock %}
