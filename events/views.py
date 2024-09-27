@@ -73,14 +73,31 @@ def generate_qr_code(request, category_id):
 from django.shortcuts import render, get_object_or_404
 from events.models import EventCategory
 
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from .models import EventCategory, EventCategoryUser
+
+@login_required
 def your_join_view(request, code):
     category = get_object_or_404(EventCategory, code=code)
-    
-    # Handle the logic for joining the category, e.g., adding a member, etc.
-    # This is where you would implement your specific join logic.
+    user = request.user
+
+    # Check if the user is already part of this category
+    try:
+        category_user = EventCategoryUser.objects.get(user=user, category=category)
+        return HttpResponse('You are already part of this category.', content_type='text/plain')
+    except EventCategoryUser.DoesNotExist:
+        pass  # User is not part of the category yet
+
+    # Handle POST request to join the category
+    if request.method == 'POST':
+        EventCategoryUser.objects.create(user=user, category=category, approved=True)  # Auto-approve
+        return HttpResponse('You have successfully joined the category!', content_type='text/plain')
 
     context = {'category': category}
-    return render(request, 'join_category.html', context)  # Adjust the template as needed
+    return render(request, 'join_category.html', context)
+  # Adjust the template as needed
 
 
 
@@ -141,21 +158,28 @@ class EventCreateView(LoginRequiredMixin, CreateView):
 from django.views.generic import ListView
 from .models import Event, EventCategoryUser
 
+
 class EventListView(ListView):
     model = Event
     template_name = 'events/event_list.html'
     context_object_name = 'events'
 
-    def get_queryset(self):
-        user = self.request.user
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # You can add any additional context variables here
+        return context
+
+
+    # def get_queryset(self):
+    #     user = self.request.user
         
-        # Fetch categories that the user has joined
-        joined_categories = EventCategoryUser.objects.filter(user=user).values_list('category_id', flat=True)
+    #     # Fetch categories that the user has joined
+    #     joined_categories = EventCategoryUser.objects.filter(user=user).values_list('category_id', flat=True)
 
-        # Fetch events that belong to the joined categories
-        events = Event.objects.filter(category__id__in=joined_categories)
+    #     # Fetch events that belong to the joined categories
+    #     events = Event.objects.filter(category__id__in=joined_categories)
 
-        return events
+    #     return events
 
 
 

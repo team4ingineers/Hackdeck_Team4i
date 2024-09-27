@@ -40,6 +40,7 @@
                                 <th>Category</th>
                                 <th class="event_image">Image</th>
                                 <th>Status</th>
+                                <th>Assigned User</th> <!-- New column for assigned user -->
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -65,6 +66,7 @@
                                         <a href="{% url 'update-event-status' event.id %}" class="text-danger">{{ event.status|title }}</a>
                                       {% endif %}
                                   </td>
+                                  <td>{{ event.user.username }}</td> <!-- Displaying the assigned user -->
                                   <td>
                                       <a class="btn btn-info" href="{% url 'event-detail' event.pk %}" title="view">
                                           <i class="fa fa-eye"></i>
@@ -79,7 +81,7 @@
                               </tr>
                             {% empty %}
                               <tr>
-                                  <td colspan="6" class="text-center">No events found.</td>
+                                  <td colspan="7" class="text-center">No events found.</td>
                               </tr>
                             {% endfor %}
                         </tbody>
