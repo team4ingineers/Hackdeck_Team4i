@@ -1,9 +1,32 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base2.html' %}
 {% block title %}Dashboard{% endblock title %}
 {% block breadcrumb %}Dashboard{% endblock breadcrumb %}
 {% block content %}
-<div class="row">
-    <div class="col-lg-3 col-6">
+{% load static %}
+
+<div class="head-title">
+  <div class="left">
+      <h1>Dashboard</h1>
+      <ul class="breadcrumb">
+          <li>
+              <a href="#">Dashboard</a>
+          </li>
+          <li><i class='bx bx-chevron-right'></i></li>
+          <li>
+              <a class="active" href="#">Home</a>
+          </li>
+      </ul>
+  </div>
+  <a href="#" class="btn-download">
+      <i class='bx bxs-cloud-download'></i>
+      <span class="text">Download PDF</span>
+  </a>
+</div>
+
+<ul class="box-info">
+  <li><a href="{% url 'event-category-list' %}" style="color: inherit;" class="small-box-footer">
+      <i class='bx bxs-calendar-check'></i>
+      <div class="col-lg-3 col-6">
       <!-- small box -->
       <div class="small-box bg-info">
         <div class="inner">
@@ -13,53 +36,68 @@
             <h3>0</h3>
           {% endif %}
 
-          <p>Event Category</p>
+          <p>Category</p>
         </div>
         <div class="icon">
           <i class="ion ion-bag"></i>
         </div>
-        <a href="{% url 'event-category-list' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-      </div>
+      </a>
+      
     </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-6">
-      <!-- small box -->
-      <div class="small-box bg-success">
-        <div class="inner">
-          {% if event %}
-            <h3>{{ event }}</h3>
-          {% else %}
-            <h3>0</h3>
-          {% endif %}
+  </li>
 
-          <p>Events</p>
+  <li>
+    <a href="{% url 'event-list' %}" style="color: inherit;" class="small-box-footer">
+      <i class='bx bxs-group'></i>
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+          <div class="inner">
+            {% if event %}
+              <h3>{{ event }}</h3>
+            {% else %}
+              <h3>0</h3>
+            {% endif %}
+  
+            <p>Events</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+         
         </div>
-        <div class="icon">
-          <i class="ion ion-stats-bars"></i>
-        </div>
-        <a href="{% url 'event-list' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </a>
       </div>
-    </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-6">
-      <!-- small box -->
-      <div class="small-box bg-warning">
-        <div class="inner">
-          {% if user %}
-            <h3>{{ user }}</h3>
-          {% else %}
-            <h3>0</h3>
-          {% endif %}
-
-          <p>Participants</p>
+    
+  </li>
+  
+  <li>
+    <a href="{% url 'join-event-list' %}" style="color: inherit;">
+      <i class='bx bxs-group'></i>
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+          <div class="inner">
+            {% if user %}
+              <h3>{{ user }}</h3>
+            {% else %}
+              <h3>0</h3>
+            {% endif %}
+  
+            <p>Participants</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-person-add"></i>
+          </div>
+          
         </div>
-        <div class="icon">
-          <i class="ion ion-person-add"></i>
-        </div>
-        <a href="{% url 'join-event-list' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </a>
       </div>
-    </div>
-    <!-- ./col -->
+    
+  </li>
+  <li>
+    <a href="{% url 'complete-event' %}" class="small-box-footer" style="color: inherit;">
+      <i class='bx bxs-group'></i>
     <div class="col-lg-3 col-6">
       <!-- small box -->
       <div class="small-box bg-danger">
@@ -75,11 +113,13 @@
         <div class="icon">
           <i class="ion ion-pie-graph"></i>
         </div>
-        <a href="{% url 'complete-event' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        
       </div>
+    </a>
     </div>
-    <!-- ./col -->
-  </div>
+</li>
+</ul>
+  
   <!-- Event List -->
   <div class="row">
     <div class="col-md-12">
