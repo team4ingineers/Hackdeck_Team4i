@@ -6,6 +6,8 @@ urlpatterns = [
     path('create-category/', EventCategoryCreateView.as_view(), name='create-event-category'),
     path('category/<int:pk>/edit/', EventCategoryUpdateView.as_view(), name='edit-event-category'),
     path('category/<int:pk>/delete/', EventCategoryDeleteView.as_view(), name='delete-event-category'),
+    path('events/category/<int:category_id>/qr/', generate_qr_code, name='generate_qr_code'),
+    path('join/<str:code>/', your_join_view, name='event-category-join'),
     path('event-create/', EventCreateView.as_view(), name='event-create'),
     path('event-list/', EventListView.as_view(), name='event-list'),
     path('event/<int:pk>/edit/', EventUpdateView.as_view(), name='event-edit'),
@@ -22,5 +24,6 @@ urlpatterns = [
     path('search_event/', search_event, name='search-event'),
     path('create/', create_event, name='create'),
     path('event_catogery/',event_catogery, name='event_catogery'),
-     path('events_dashboard/',events_dashboard, name='events_dashboard'),
+    path('events_dashboard/',events_dashboard, name='events_dashboard'),
+    path('fetch-events/', fetch_events_by_category, name='fetch-events'),
 ]

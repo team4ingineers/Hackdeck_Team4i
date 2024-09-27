@@ -1,40 +1,33 @@
-from django.views.generic import (
-    ListView,
-    CreateView,
-    UpdateView,
-    DetailView,
-    DeleteView,
-    View,
-)
+from django.views.generic import *
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import (
-    EventCategory,
-    Event,
-    EventMember,
-    UserCoin,
-    EventImage,
-    EventAgenda
-
-)
-from .forms import EventForm, EventImageForm, EventAgendaForm, EventCreateMultiForm
-
+from .models import *
+from .forms import *
+EventCategory.objects.all()  # Replace 'your_app' with your actual app name
 
 # Event category list view
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+from .models import EventCategory
+
 class EventCategoryListView(LoginRequiredMixin, ListView):
     login_url = 'login'
     model = EventCategory
     template_name = 'events/event_category.html'
-    context_object_name = 'event_category'
+    context_object_name = 'event_categories'  # Updated for clarity
+
+    def get_queryset(self):
+        print("Current User:", self.request.user)  # Debug statement
+        return EventCategory.objects.filter(created_user=self.request.user)
 
 
 class EventCategoryCreateView(LoginRequiredMixin, CreateView):
     login_url = 'login'
     model = EventCategory
-    fields = ['name', 'code', 'status']
+    fields = ['name', 'status']
     template_name = 'events/create_event_category.html'
 
     def form_valid(self, form):
@@ -55,6 +48,41 @@ class EventCategoryDeleteView(LoginRequiredMixin, DeleteView):
     model =  EventCategory
     template_name = 'events/event_category_delete.html'
     success_url = reverse_lazy('event-category-list')
+
+
+
+import qrcode
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse
+from events.models import EventCategory
+
+def generate_qr_code(request, category_id):
+    category = get_object_or_404(EventCategory, id=category_id)
+    
+    # Generate the URL using the unique code
+    url = request.build_absolute_uri(f'/join/{category.code}/')  # Use the code attribute for the link
+    
+    # Generate the QR code
+    qr = qrcode.make(url)
+    
+    # Create an HttpResponse object and set the content type to image/png
+    response = HttpResponse(content_type='image/png')
+    qr.save(response, 'PNG')
+    return response
+
+from django.shortcuts import render, get_object_or_404
+from events.models import EventCategory
+
+def your_join_view(request, code):
+    category = get_object_or_404(EventCategory, code=code)
+    
+    # Handle the logic for joining the category, e.g., adding a member, etc.
+    # This is where you would implement your specific join logic.
+
+    context = {'category': category}
+    return render(request, 'join_category.html', context)  # Adjust the template as needed
+
+
 
 @login_required(login_url='login')
 def create_event(request):
@@ -110,10 +138,26 @@ class EventCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
+from django.views.generic import ListView
+from .models import Event, EventCategoryUser
+
 class EventListView(ListView):
     model = Event
     template_name = 'events/event_list.html'
     context_object_name = 'events'
+
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Fetch categories that the user has joined
+        joined_categories = EventCategoryUser.objects.filter(user=user).values_list('category_id', flat=True)
+
+        # Fetch events that belong to the joined categories
+        events = Event.objects.filter(category__id__in=joined_categories)
+
+        return events
+
+
 
 
 class EventUpdateView(LoginRequiredMixin, UpdateView):
@@ -231,3 +275,24 @@ def event_catogery(request):
 
 def events_dashboard(request):
     return render(request, 'events_dashboard.html')
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import EventCategory, EventCategoryUser
+
+@login_required
+def join_event_category(request, code):
+    # Get the category by its code
+    category = get_object_or_404(EventCategory, code=code)
+    
+    # Check if the user has already joined
+    if EventCategoryUser.objects.filter(user=request.user, category=category).exists():
+        # Redirect if already joined or show a message
+        return redirect('event-category-list')  # or some message that user is already part of this category
+
+    # Create an EventCategoryUser to store the user and category
+    EventCategoryUser.objects.create(user=request.user, category=category, approved=True)  # You can change approved to False for admin approval
+
+    return redirect('event-category-list')  # Redirect after joining

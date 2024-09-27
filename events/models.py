@@ -2,15 +2,19 @@ from django.db import models
 from django.urls import reverse
 from mapbox_location_field.models import LocationField
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.utils.crypto import get_random_string
 
+
+from django.db import models
+from django.contrib.auth.models import User
 
 class EventCategory(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    code = models.CharField(max_length=6, unique=True)
-    created_user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='created_user')
-    updated_user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='updated_user')
+    code = models.CharField(max_length=6, unique=True, blank=True)  # Auto-generated numeric code
+    created_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_event_categories')
+    updated_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='updated_event_categories')
     created_date = models.DateField(auto_now_add=True)
-    updated_date = models.DateField(auto_now_add=True)
+    updated_date = models.DateField(auto_now=True)
     status_choice = (
         ('upcoming', 'Upcoming'),
         ('active', 'Active'),
@@ -21,15 +25,39 @@ class EventCategory(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse('event-category-list')
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Generate code only on creation
+            self.code = self.generate_unique_code()
+        super(EventCategory, self).save(*args, **kwargs)
+
+    def generate_unique_code(self):
+        while True:
+            code = get_random_string(length=6, allowed_chars='0123456789')
+            if not EventCategory.objects.filter(code=code).exists():
+                return code
+
+    def generate_join_link(self):
+        """Generate a unique shareable join link"""
+        return reverse('event-category-join', kwargs={'code': self.code})
+
+
+class EventCategoryUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='joined_categories')
+    category = models.ForeignKey(EventCategory, on_delete=models.CASCADE, related_name='approved_users')
+    approved = models.BooleanField(default=False)  # Admin can approve later or auto-approve
+
+    def __str__(self):
+        return f'{self.user.username} in {self.category.name}'
 
 
 class Event(models.Model):
     category = models.ForeignKey(EventCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, unique=True)
-    uid = models.PositiveIntegerField(unique=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     description = RichTextUploadingField()
 
     venue = models.CharField(max_length=255)

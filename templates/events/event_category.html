@@ -43,7 +43,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for category in event_category %}
+                            {% for category in event_categories %}
                               <tr>
                                   <td>{{ forloop.counter }}</td>
                                   <td>{{ category.name }}</td>
@@ -56,10 +56,14 @@
                                       <a class="btn btn-danger" href="{% url 'delete-event-category' category.pk %}">
                                           <i class="fa fa-trash"></i>
                                       </a>
+                                      <a class="btn btn-primary" href="{% url 'generate_qr_code' category.pk %}">
+                                          <i class="fa fa-link"></i>
+                                      </a>
                                   </td>
                               </tr>
                             {% endfor %}
                         </tbody>
+                        
                     </table>
                 </div>
             </div>
