@@ -5,7 +5,33 @@ Welcome to **EventCrafter**, a cutting-edge event planning platform that leverag
 
 ---
 
-## 🌟 **Features**
+## 🔑 **Basic Features** (core features below)
+
+### **User-Friendly Login**
+- Simple and secure access to your event planning dashboard.
+
+### **Event Creation**
+- Create new events or categories.
+- Invite team members using **QR codes** or **shareable links**.
+
+### **Sub-Event Management**
+- Break down large events into manageable sub-events.
+- Enter detailed information for each sub-event.
+
+### **Task Assignment**
+- Assign specific tasks to team members for each sub-event.
+- Set deadlines and priorities.
+
+### **Real-Time Updates**
+- Receive instant notifications on task progress.
+- Stay informed about changes and updates to the event plan.
+
+### **Collaborative Planning**
+- Work together with your team in real-time.
+- Share ideas and make decisions collectively.
+
+
+## 🌟 **Core Features**
 
 ### 🧠 **AI-Powered Event Planning**
 At the heart of EventCrafter is our custom AI algorithm, delivering precise planning solutions:
