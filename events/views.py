@@ -499,7 +499,7 @@ from googleapiclient.errors import HttpError
 
 # Define your scopes and service account file
 SCOPES = ['https://www.googleapis.com/auth/drive']
-SERVICE_ACCOUNT_FILE = 'C:\\Users\\Nishant\\Downloads\\service_account.json'
+SERVICE_ACCOUNT_FILE = 'C:\\Hackdeck_Team4i\\service_account.json'
 PARENT_FOLDER_ID = "1-znjTCTeW_Us22GqyvYMlys0AbDi-BMR"
 
 # Function to authenticate user (service account for simplicity)
@@ -903,6 +903,48 @@ def view_folder_contents(request, folder_id):
 
 
 
+
+
+
+# views.py
+from django.shortcuts import render
+from .models import Task
+import pandas as pd
+import matplotlib.pyplot as plt
+import os
+
+def generate_task_graphs(task_counts):
+    # Bar Graph
+    plt.figure(figsize=(10, 6))
+    plt.bar(task_counts.index, task_counts.values, color=['skyblue', 'lightcoral'])
+    plt.title('Task Completion Status')
+    plt.xlabel('Status')
+    plt.ylabel('Number of Tasks')
+    plt.xticks(rotation=45)
+    plt.savefig(os.path.join('static', 'images', 'task_completion_bar_chart.png'))
+    plt.close()
+
+    # Pie Chart
+    plt.figure(figsize=(8, 8))
+    plt.pie(task_counts, labels=task_counts.index, autopct='%1.1f%%', startangle=140)
+    plt.title('Task Completion Distribution')
+    plt.axis('equal')
+    plt.savefig(os.path.join('static', 'images', 'task_completion_pie_chart.png'))
+    plt.close()
+
+def task_progress_view(request):
+    tasks = Task.objects.all().values('task_name', 'completed')
+
+    # Convert the QuerySet to a DataFrame
+    df = pd.DataFrame(tasks)
+
+    # Count completed and not completed tasks
+    task_counts = df['completed'].value_counts().rename({True: 'Completed', False: 'Not Completed'})
+
+    # Generate graphs
+    generate_task_graphs(task_counts)
+
+    return render(request, 'task_progress.html', {'df': df, 'task_counts': task_counts})
 
 def budget(request):
     return render(request, 'budget.html')

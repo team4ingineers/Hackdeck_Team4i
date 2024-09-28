@@ -1,0 +1,19 @@
+{% extends 'base/base2.html' %}
+
+{% block title %}Task Progress{% endblock %}
+
+{% block content %}
+<h1>Task Progress</h1>
+
+<!-- Include Matplotlib to render the graphs -->
+<div>
+    <h2>Completion Status Bar Chart</h2>
+    <img src="{% static 'images/task_completion_bar_chart.png' %}" alt="Task Completion Bar Chart">
+</div>
+
+<div>
+    <h2>Completion Status Pie Chart</h2>
+    <img src="{% static 'images/task_completion_pie_chart.png' %}" alt="Task Completion Pie Chart">
+</div>
+
+{% endblock %}
