@@ -54,16 +54,4 @@ Stay connected without opening the app or website:
 - Optimized for **mobile devices**.
 - Consistent experience across all platforms.
 
----
 
-## 🚀 **Getting Started**
-
-### **Prerequisites**
-- Node.js (v14 or later)
-- Python (v3.8 or later)
-- Firebase account
-
-### **Installation**
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/eventcrafter.git
