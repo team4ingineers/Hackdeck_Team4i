@@ -20,11 +20,12 @@ from django.urls import path, include
 from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 from django.contrib.auth import views as auth_views
 
-from .views import dashboard, login_page, logut_page, registerpage
+from .views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', dashboard, name='dashboard'),
+    path('', home, name='home'),
+    path('dashboard/', dashboard, name='dashboard'),
     path('register/', registerpage, name='register'),
     path('login/', login_page, name='login'),
     path('logout/', logut_page, name='logout'),
