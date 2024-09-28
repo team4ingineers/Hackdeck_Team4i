@@ -182,6 +182,26 @@
                         </thead>
                         <tbody>
                             {% for category in event_categories %}
+                              <tr>
+                                  <td>{{ forloop.counter }}</td>
+                                  <td>{{ category.name }}</td>
+                                  <td>{{ category.code }}</td>
+                                  <td>{{ category.status }}</td>
+                                  <td>
+                                      <a class="btn btn-info" href="{% url 'edit-event-category' category.pk %}">
+                                          <i class="fa fa-edit"></i>
+                                      </a>
+                                      <a class="btn btn-danger" href="{% url 'delete-event-category' category.pk %}">
+                                          <i class="fa fa-trash"></i>
+                                      </a>
+                                      <a class="btn btn-primary" href="{% url 'generate_qr_code' category.pk %}">
+                                          <i class="fa fa-link"></i>
+                                      </a>
+                                      <a class="btn btn-primary" href="{% url 'email_invitation'  %}">
+                                        <i class="fa fa-envelope"></i>
+                                    </a>
+                                  </td>
+                              </tr>
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ category.name }}</td>
