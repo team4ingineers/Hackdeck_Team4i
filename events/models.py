@@ -151,6 +151,18 @@ class UserCoin(models.Model):
 
 
 
+class Task(models.Model):
+    event = models.ForeignKey(Event, related_name='tasks', on_delete=models.CASCADE)  # Link to the Event model
+    task_name = models.CharField(max_length=255)
+    description = models.TextField()
+    assigned_person = models.CharField(max_length=255)
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.task_name
+
 
 
 

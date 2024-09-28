@@ -486,3 +486,159 @@ def download_excel_template(request):
     # Serve the file for download
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='standard_invitation.xlsx')
 
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Task, Event
+from .forms import TaskForm
+
+def task_list(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    tasks = event.tasks.all()
+    return render(request, 'task_list.html', {'event': event, 'tasks': tasks})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Event, Task
+from .forms import TaskForm
+
+def create_task(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.event = event
+            task.save()
+            return redirect('event-tasks', event_id=event.id)
+    else:
+        form = TaskForm()
+
+    return render(request, 'task_form.html', {'form': form, 'event': event})
+
+
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Task
+
+def update_task_completion(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.is_completed = not task.is_completed  # Toggle completion status
+        task.save()
+        return redirect('event-tasks', event_id=task.event.id)  # Redirect back to the task list
+
+
+def task_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return render(request,'tasks_view.html')
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Event
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return render(request, 'event_detail.html', {'event': event})
+
+
+from django.shortcuts import render
+from .models import Event
+
+def event_list(request):
+    events = Event.objects.all()
+    return render(request, 'event_list.html', {'events': events})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Task
+
+from twilio.rest import Client
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from .models import Task
+
+@login_required
+def update_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if request.method == "POST":
+        completed = request.POST.get('completed') == 'on'
+        task.completed = completed
+        task.save()
+
+        if completed:  # If the task is marked as complete
+            # Twilio setup
+            account_sid = 'ACb604cdff6ba558c3c2b0c563a69a9a02'
+            auth_token = 'fcd5d895f608ed8d9cce2e09311045d4'
+            client = Client(account_sid, auth_token)
+
+            # Sending the SMS
+            message = client.messages.create(
+                to='+919137796495',  # Replace with the number you want to send to
+                from_='+18577676358',  # Replace with your Twilio number
+                body=f'Task "{task.task_name}" has been marked as completed.'
+            )
+            print(f"Message SID: {message.sid}")
+
+        return redirect('event-list')
+
+    return HttpResponse("Task not updated")
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Event
+
+def event_tasks(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    tasks = event.tasks.all()  # Access tasks using the related name 'tasks'
+    return render(request, 'task_list.html', {'event': event, 'tasks': tasks})
+
+
+from django import forms
+from django.contrib.auth.models import User
+from .models import Task
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['task_name', 'description', 'assigned_person', 'start_datetime', 'end_datetime']
+
+    assigned_person = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Assign to User"
+    )
+
+
+from twilio.rest import Client
+from django.shortcuts import redirect, get_object_or_404
+from . import models  # Make sure to import your models
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
+
+def update_task_view(request, pk):
+    task = get_object_or_404(models.Task, id=pk)
+
+    if request.method == 'POST':
+        # Update the task's completion status
+        task.completed = 'completed' in request.POST
+        task.save()
+
+        # If the task is marked as completed, send a message
+        if task.completed:
+            account_sid = 'ACb604cdff6ba558c3c2b0c563a69a9a02'
+            auth_token = 'fcd5d895f608ed8d9cce2e09311045d4'
+            client = Client(account_sid, auth_token)
+            message = client.messages.create(
+                to= '+919137796495',
+                from_='+18577676358',
+                body=f'MEDSAFE\nDear {task.assigned_person.name}, Your task "{task.task_name}" has been marked as completed!',
+            )
+            print(message.sid)
+
+    return redirect('event-tasks', event_id=task.event.id)  # Redirect back to the tasks list

@@ -46,6 +46,12 @@
                 <span class="text">Events</span>
             </a>
         </li>
+        <li class="{% if '/events/events/' in request.path %}active{% endif %}{% if '/events/join-event-list/' in request.path %}active{% endif %}{% if '/events/event-list/' in request.path %}active{% endif %}{% if '/events/event-create' in request.path %}active{% endif %}">
+            <a href="/events/events/">
+                <i class='bx bxs-message-dots'></i>
+                <span class="text">Tasks</span>
+            </a>
+        </li>
         <li class="{% if '/events/gemini' in request.path %}active{% endif %}">
             <a href="/events/gemini/">
                 <i class='bx bxs-brain'></i>
