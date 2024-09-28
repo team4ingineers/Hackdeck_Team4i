@@ -1,129 +1,161 @@
-{% extends 'base/base.html' %}
+{% extends 'base/base2.html' %}
 {% block title %}Event List{% endblock title %}
 {% block breadcrumb %}Event List{% endblock breadcrumb %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-5">
-                            <h5>Event List</h5>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="row">
-                                <form class="form-inline ml-3" action="{% url 'search-event' %}" method="POST">
-                                    {% csrf_token %}
-                                    <div class="input-group input-group-sm">
-                                        <input class="form-control form-control-navbar" name="search" type="search" placeholder="Search" aria-label="Search">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-navbar" type="submit">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                                <a class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</a> 
-                                <a class="btn active" onclick="gridView()"><i class="fa fa-th-large"></i> Grid</a>
-                                <a class="btn btn-success" href="{% url 'event-create' %}">Create New Event</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped table-bordered datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="border-collapse: collapse !important">
-                        <thead>
-                            <tr role="row">
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th class="event_image">Image</th>
-                                <th>Status</th>
-                                <th>Assigned User</th> <!-- New column for assigned user -->
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for event in events %}
-                              <tr>
-                                  <td>{{ forloop.counter }}</td>
-                                  <td>{{ event.name }}</td>
-                                  <td>{{ event.category }}</td>
-                                  <td class="event_image">
-                                      {% if event.eventimage %}
-                                        <img src="{{ event.eventimage.image.url }}" alt="Image" height="100px" width="100px">
-                                      {% else %}
-                                        <span>No Image</span>
-                                      {% endif %}
-                                  </td>
-                                  <td>
-                                      {% if event.status == 'active' %}
-                                        <a href="{% url 'update-event-status' event.id %}" class="text-success">{{ event.status|title }}</a>
-                                      {% elif event.status == 'completed' %}
-                                        <a href="{% url 'update-event-status' event.id %}" class="text-primary">{{ event.status|title }}</a>
-                                      {% else %}
-                                        <a href="{% url 'update-event-status' event.id %}" class="text-danger">{{ event.status|title }}</a>
-                                      {% endif %}
-                                  </td>
-                                  <td>{{ event.user.username }}</td> <!-- Displaying the assigned user -->
-                                  <td>
-                                      <a class="btn btn-info" href="{% url 'event-detail' event.pk %}" title="view">
-                                          <i class="fa fa-eye"></i>
-                                      </a>
-                                      <a class="btn btn-info" href="{% url 'event-edit' event.pk %}" title="edit">
-                                          <i class="fa fa-edit"></i>
-                                      </a>
-                                      <a class="btn btn-danger" href="{% url 'event-delete' event.pk %}" title="delete">
-                                          <i class="fa fa-trash"></i>
-                                      </a>
-                                  </td>
-                              </tr>
-                            {% empty %}
-                              <tr>
-                                  <td colspan="7" class="text-center">No events found.</td>
-                              </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
+<style>
+    /* Container Styling for Search and Button */
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Space below the container */
+    }
+
+    /* Form Input Styling */
+    .search-container form {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-container input[type="search"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+
+    .search-container button {
+        padding: 10px 20px;
+        margin-left: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .search-container button:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+
+    /* Create Button Styling */
+    .create-button {
+        padding: 10px 20px;
+        background-color: #28a745; /* Success color for create button */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .create-button:hover {
+        background-color: #218838; /* Darker shade on hover */
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%; /* Full width */
+        border-collapse: collapse; /* Merge borders */
+        margin: 20px 0; /* Space around the table */
+        font-size: 16px; /* Font size */
+    }
+
+    /* Table Header Styling */
+    thead {
+        background-color: #f2f2f2; /* Light gray background for header */
+    }
+
+    th, td {
+        padding: 10px; /* Padding for cells */
+        text-align: left; /* Align text to the left */
+        border: 1px solid #ddd; /* Light gray border */
+    }
+
+    /* Row Hover Effect */
+    tr:hover {
+        background-color: #f5f5f5; /* Slightly darker gray on hover */
+    }
+
+    /* Action Links Styling */
+    a {
+        text-decoration: none; /* Remove underline */
+        color: #007bff; /* Bootstrap primary color */
+    }
+
+    a:hover {
+        text-decoration: underline; /* Underline on hover */
+    }
+</style>
+
+<h5>Event List</h5>
+
+<div class="search-container">
+    <form action="{% url 'search-event' %}" method="POST">
+        {% csrf_token %}
+        <input name="search" type="search" placeholder="Search" aria-label="Search">
+        <button type="submit">Search</button>
+    </form>
+    <a href="{% url 'event-create' %}" class="create-button">Create New Event</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>Status</th>
+            <th>Assigned User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ event.name }}</td>
+                <td>{{ event.category }}</td>
+                <td>
+                    {% if event.eventimage %}
+                        <img src="{{ event.eventimage.image.url }}" alt="Image" height="100" width="100">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'update-event-status' event.id %}">{{ event.status|title }}</a>
+                </td>
+                <td>{{ event.user.username }}</td>
+                <td>
+                    <a href="{% url 'event-detail' event.pk %}">View</a>
+                    <a href="{% url 'event-edit' event.pk %}">Edit</a>
+                    <a href="{% url 'event-delete' event.pk %}">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7">No events found.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock content %}
 
 {% block extrascript %}
 <script>
-    // Get the elements with class="event_image"
-    var elements = document.getElementsByClassName("event_image");
-
-    // List View
     function listView() {
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.display = 'none'; // Hide image in list view
-        }
+        // Functionality for list view
     }
     
-    // Grid View
     function gridView() {
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.display = 'block'; // Show image in grid view
-        }
-    }
-    
-    // Add active class to the current button (highlight it)
-    var container = document.getElementById("btnContainer");
-    if (container) {
-        var btns = container.getElementsByClassName("btn");
-        for (let i = 0; i < btns.length; i++) {
-            btns[i].addEventListener("click", function() {
-                var current = document.getElementsByClassName("active");
-                if (current.length > 0) {
-                    current[0].className = current[0].className.replace(" active", "");
-                }
-                this.className += " active";
-            });
-        }
+        // Functionality for grid view
     }
 </script>
 {% endblock extrascript %}
