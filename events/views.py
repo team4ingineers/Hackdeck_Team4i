@@ -570,8 +570,8 @@ def update_task(request, task_id):
 
         if completed:  # If the task is marked as complete
             # Twilio setup
-            account_sid = 'ACb604cdff6ba558c3c2b0c563a69a9a02'
-            auth_token = 'fcd5d895f608ed8d9cce2e09311045d4'
+            account_sid = os.environ["account_sid"]
+            auth_token = os.environ["auth_token"]
             client = Client(account_sid, auth_token)
 
             # Sending the SMS
