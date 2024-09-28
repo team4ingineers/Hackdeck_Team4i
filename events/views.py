@@ -499,12 +499,7 @@ from googleapiclient.errors import HttpError
 
 # Define your scopes and service account file
 SCOPES = ['https://www.googleapis.com/auth/drive']
-import os
-
-# Assuming your project root is set as BASE_DIR in settings.py
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Dynamically locate the service account file
+SERVICE_ACCOUNT_FILE = 'C:\\Hackdeck_Team4i\\service_account.json'
 PARENT_FOLDER_ID = "1-znjTCTeW_Us22GqyvYMlys0AbDi-BMR"
 
 # Function to authenticate user (service account for simplicity)
@@ -787,24 +782,18 @@ from django.core.files.storage import FileSystemStorage
 from googleapiclient.http import MediaFileUpload
 import os
 from googleapiclient.errors import HttpError
-from google.oauth2 import service_account
-from django.conf import settings
 
+
+# Define your scopes and service account file
 SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = 'C:\\Users\\Nishant\\Downloads\\service_account.json'
+PARENT_FOLDER_ID = "1-znjTCTeW_Us22GqyvYMlys0AbDi-BMR"
 
-# Function to authenticate user using service account
+# Function to authenticate user (service account for simplicity)
 def authenticate_user():
-    service_account_file = settings.SERVICE_ACCOUNT_FILE
-
-    # Set up the credentials
-    credentials = service_account.Credentials.from_service_account_file(
-        service_account_file,
-        scopes=SCOPES
-    )
-    return credentials
-
-
-
+    from google.oauth2.service_account import Credentials
+    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    return creds
 
 # Function to create a new folder on Google Drive
 def create_folder(folder_name, parent_folder_id=PARENT_FOLDER_ID):
@@ -947,18 +936,20 @@ from django.shortcuts import render
 from .models import Task  # Adjust based on your actual model
 
 def task_progress_view(request):
-    tasks = Task.objects.all().values('task_name', 'completed')
+    # Static data for event names and registration counts
+    event_names = ['Event A', 'Event B', 'Event C', 'Event D']
+    registrations = [15, 30, 45, 25]  # Static registration counts
+    attendance_over_time = [10, 20, 35, 40, 50]  # Static attendance data for a line chart
+    days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5']  # Static days for the line chart
 
-    # Convert the QuerySet to a DataFrame
-    df = pd.DataFrame(tasks)
+    context = {
+        'event_names': event_names,
+        'registrations': registrations,
+        'attendance_over_time': attendance_over_time,
+        'days': days,
+    }
+    return render(request, 'task_progress.html', context)
 
-    # Count completed and not completed tasks
-    task_counts = df['completed'].value_counts().rename({True: 'Completed', False: 'Not Completed'})
-
-    # Generate graphs
-    generate_task_graphs(task_counts)
-
-    return render(request, 'task_progress.html', {'df': df, 'task_counts': task_counts})
 
 def budget(request):
     return render(request, 'budget.html')
