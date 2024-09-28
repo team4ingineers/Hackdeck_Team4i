@@ -41,4 +41,5 @@ urlpatterns = [
     path('progress/', progress,name='progress'),
     path('budget/', progress,name='budget'),
     path('vendor/', vendor,name='vendor'),
+     path('download-quote/', download_quote, name='download_quote'),
 ]

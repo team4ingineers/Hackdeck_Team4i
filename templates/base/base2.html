@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Dashboard{% endblock %}</title>
     
-  
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/mentor_dashboard.css' %}">
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
@@ -66,7 +67,7 @@
         </li>
         <li class="{% if '/events/vendor' in request.path %}active{% endif %}">
             <a href="/events/vendor/">
-                <i class='bx bxs-conversation'></i>
+                <i class='bx bxs-store-alt' ></i>
                 <span class="text">Vendor's marketplace</span>
             </a>
         </li>
