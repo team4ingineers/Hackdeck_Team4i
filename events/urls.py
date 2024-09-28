@@ -7,8 +7,7 @@ urlpatterns = [
     path('category/<int:pk>/edit/', EventCategoryUpdateView.as_view(), name='edit-event-category'),
     path('category/<int:pk>/delete/', EventCategoryDeleteView.as_view(), name='delete-event-category'),
     path('events/category/<int:category_id>/qr/', generate_qr_code, name='generate_qr_code'),
-    path('events/category/email_invitation', email_invitation, name='email_invitation'),###
-    path('download-excel-template/', download_excel_template, name='download_excel_template'),
+   
     path('join/<str:code>/', your_join_view, name='event-category-join'),
     path('event-create/', EventCreateView.as_view(), name='event-create'),
     path('event-list/', EventListView.as_view(), name='event-list'),
@@ -29,4 +28,6 @@ urlpatterns = [
     path('events_dashboard/',events_dashboard, name='events_dashboard'),
     path('gemini/',gemini, name='gemini'),
     path('group_discussion/',group_discussion, name='group_discussion'),
+     path('upload_invitation/', upload_invitation, name='upload_invitation'),
+    path('download-excel-template/', download_excel_template, name='download_excel_template'),
 ]

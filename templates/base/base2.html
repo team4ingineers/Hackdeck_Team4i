@@ -58,8 +58,13 @@
                 <span class="text">Group Discussion</span>
             </a>
         </li>
-
-    
+       
+        <li class="{% if '/events/upload_invitation/' in request.path %}active{% endif %}">
+            <a href="/events/upload_invitation/">
+                <i class='bx bxs-brain'></i>
+                <span class="text">Invitation Tool</span>
+            </a>
+        </li>
         
     <ul class="side-menu">
         <li class="{% if request.path == '/settings/' %}active{% endif %}">

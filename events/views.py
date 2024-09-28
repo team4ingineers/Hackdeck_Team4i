@@ -381,7 +381,7 @@ from django.http import HttpResponse
 from django.utils.html import strip_tags
 
 
-def email_invitation(request):
+def upload_invitation(request):
     if request.method == 'POST':
         # File upload
         excel_file = request.FILES.get('excel_file')
@@ -473,7 +473,7 @@ def email_invitation(request):
         return HttpResponse("Invitations sent successfully!")
 
     # Render the upload invitations template
-    return render(request, 'events/upload_invitations.html')
+    return render(request, 'upload_invitation.html')
 
 from django.http import FileResponse
 from django.conf import settings
