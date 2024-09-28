@@ -8,6 +8,12 @@ from .forms import LoginForm, CreateUserForm
 from django.contrib.auth.forms import UserCreationForm
 
 
+
+def home(request):
+    return render(request,'index.html')
+
+
+
 @login_required(login_url='login')
 def dashboard(request):
     user = EventMember.objects.count()
