@@ -41,13 +41,13 @@
         
         
         
-        <li class="{% if '/events/events_dashboard' in request.path %}active{% endif %}{% if '/events/join-event-list/' in request.path %}active{% endif %}{% if '/events/event-list/' in request.path %}active{% endif %}{% if '/events/event-create' in request.path %}active{% endif %}">
+        <li class="{% if '/events/events_dashboard' in request.path %}active{% endif %}{% if '/events/complete-event/' in request.path %}active{% endif %}{% if '/events/join-event-list/' in request.path %}active{% endif %}{% if '/events/event-list/' in request.path %}active{% endif %}{% if '/events/event-create' in request.path %}active{% endif %}">
             <a href="/events/events_dashboard/">
                 <i class='bx bxs-message-dots'></i>
                 <span class="text">Events</span>
             </a>
         </li>
-        <li class="{% if '/events/events/' in request.path %}active{% endif %}{% if '/events/join-event-list/' in request.path %}active{% endif %}{% if '/events/event-list/' in request.path %}active{% endif %}{% if '/events/event-create' in request.path %}active{% endif %}">
+        <li class="{% if '/events/events/' in request.path %}active{% endif %}">
             <a href="/events/events/">
                 <i class='bx bxs-message-dots'></i>
                 <span class="text">Tasks</span>
