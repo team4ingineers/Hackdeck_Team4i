@@ -4,12 +4,12 @@
 
 {% block content %}
 <style>
-    body {
-        font-family: Arial, sans-serif;
+    #event-list-container {
+        font-family: Arial, sans-serif; 
         background-color: #f4f4f4;
         padding: 20px;
     }
-    .event-container {
+    #event-list-container .event-container {
         background-color: #fff;
         border: 1px solid #ddd;
         border-radius: 8px;
@@ -17,10 +17,10 @@
         margin-bottom: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    h2 {
+    #event-list-container h2 {
         margin-top: 0;
     }
-    .button {
+    #event-list-container .button {
         padding: 10px 20px;
         background-color: #007bff;
         color: white;
@@ -31,11 +31,11 @@
         transition: background-color 0.3s;
         margin-top: 10px;
     }
-    .button:hover {
+    #event-list-container .button:hover {
         background-color: #0056b3;
     }
 </style>
-    <div class="container">
+    <div id="event-list-container" class="container">
         <h1>Event List</h1>
         
         {% for event in events %}
