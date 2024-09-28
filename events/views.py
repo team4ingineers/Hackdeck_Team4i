@@ -947,17 +947,29 @@ from django.shortcuts import render
 from .models import Task  # Adjust based on your actual model
 
 def task_progress_view(request):
-    # Static data for event names and registration counts
-    event_names = ['Event A', 'Event B', 'Event C', 'Event D']
-    registrations = [15, 30, 45, 25]  # Static registration counts
-    attendance_over_time = [10, 20, 35, 40, 50]  # Static attendance data for a line chart
-    days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5']  # Static days for the line chart
+    tasks = Task.objects.all().values('task_name', 'completed')
 
-    context = {
-        'event_names': event_names,
-        'registrations': registrations,
-        'attendance_over_time': attendance_over_time,
-        'days': days,
-    }
-    return render(request, 'task_progress.html', context)
+    # Convert the QuerySet to a DataFrame
+    df = pd.DataFrame(tasks)
 
+    # Count completed and not completed tasks
+    task_counts = df['completed'].value_counts().rename({True: 'Completed', False: 'Not Completed'})
+
+    # Generate graphs
+    generate_task_graphs(task_counts)
+
+    return render(request, 'task_progress.html', {'df': df, 'task_counts': task_counts})
+
+def budget(request):
+    return render(request, 'budget.html')
+
+def progress(request):
+    return render(request, 'progress.html')
+
+def vendor(request):
+    return render(request, 'vendor.html')
+
+def download_quote(request):
+    # Set the path to your generated PDF
+    pdf_path = os.path.join('media', 'event_quote.pdf')
+    return FileResponse(open(pdf_path, 'rb'), content_type='application/pdf', as_attachment=True, filename='event_quote.pdf')

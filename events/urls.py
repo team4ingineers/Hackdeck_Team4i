@@ -40,4 +40,8 @@ urlpatterns = [
     path('event/<int:event_id>/tasks/', event_tasks, name='event-tasks'),
     path('task/<int:task_id>/update/', update_task, name='update-task'),
     path('tasks/progress/', task_progress_view, name='task-progress'),
+    path('progress/', progress,name='progress'),
+    path('budget/', progress,name='budget'),
+    path('vendor/', vendor,name='vendor'),
+     path('download-quote/', download_quote, name='download_quote'),
 ]

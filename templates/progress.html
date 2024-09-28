@@ -1,0 +1,74 @@
+{% extends 'base/base2.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <header class="text-center mb-4">
+        <h1>Welcome to Our Marketplace</h1>
+        <p class="lead">Find everything you need at the best prices.</p>
+    </header>
+
+    <!-- Search and Filter Bar -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <input type="text" class="form-control" placeholder="Search for products...">
+        </div>
+        <div class="col-md-4">
+            <select class="form-control">
+                <option>Filter by Category</option>
+                <option>Electronics</option>
+                <option>Fashion</option>
+                <option>Home & Garden</option>
+                <option>Sports</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Product Listing Section -->
+    <div class="row">
+        <!-- Example Product Card -->
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card h-100">
+                <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">${{ product.price }}</p>
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="row mt-4">
+        <div class="col text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Section -->
+<footer class="mt-5 py-4 bg-dark text-white text-center">
+    <div class="container">
+        <p>&copy; 2024 Our Marketplace. All rights reserved.</p>
+    </div>
+</footer>
+{% endblock %}
