@@ -380,6 +380,7 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.utils.html import strip_tags
 
+
 def email_invitation(request):
     if request.method == 'POST':
         # File upload
