@@ -23,7 +23,7 @@
         <span class="text">Event</span>
     </a>
     <ul class="side-menu top">
-        <li class="{% if request.path == '/' %}active{% endif %}">
+        <li class="{% if request.path == '/dashboard/' %}active{% endif %}">
             <a href="{% url 'dashboard' %}" class="nav-link">
                 <i class='bx bxs-dashboard'></i>
                 <span class="text">Dashboard</span>
@@ -44,6 +44,12 @@
             <a href="/events/events_dashboard/">
                 <i class='bx bxs-message-dots'></i>
                 <span class="text">Events</span>
+            </a>
+        </li>
+        <li class="{% if '/events/events/' in request.path %}active{% endif %}{% if '/events/join-event-list/' in request.path %}active{% endif %}{% if '/events/event-list/' in request.path %}active{% endif %}{% if '/events/event-create' in request.path %}active{% endif %}">
+            <a href="/events/events/">
+                <i class='bx bxs-message-dots'></i>
+                <span class="text">Tasks</span>
             </a>
         </li>
         <li class="{% if '/events/gemini' in request.path %}active{% endif %}">

@@ -617,3 +617,290 @@ def view_folder_contents(request, folder_id):
 
 
 
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Task, Event
+from .forms import TaskForm
+
+def task_list(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    tasks = event.tasks.all()
+    return render(request, 'task_list.html', {'event': event, 'tasks': tasks})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Event, Task
+from .forms import TaskForm
+
+def create_task(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.event = event
+            task.save()
+            return redirect('event-tasks', event_id=event.id)
+    else:
+        form = TaskForm()
+
+    return render(request, 'task_form.html', {'form': form, 'event': event})
+
+
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Task
+
+def update_task_completion(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.is_completed = not task.is_completed  # Toggle completion status
+        task.save()
+        return redirect('event-tasks', event_id=task.event.id)  # Redirect back to the task list
+
+
+def task_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return render(request,'tasks_view.html')
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Event
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return render(request, 'event_detail.html', {'event': event})
+
+
+from django.shortcuts import render
+from .models import Event
+
+def event_list(request):
+    events = Event.objects.all()
+    return render(request, 'event_list.html', {'events': events})
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Task
+
+from twilio.rest import Client
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from .models import Task
+
+@login_required
+def update_task(request, task_id):
+    task = Task.objects.get(id=task_id)
+    if request.method == "POST":
+        completed = request.POST.get('completed') == 'on'
+        task.completed = completed
+        task.save()
+
+        if completed:  # If the task is marked as complete
+            # Twilio setup
+            account_sid = os.environ["account_sid"]
+            auth_token = os.environ["auth_token"]
+            client = Client(account_sid, auth_token)
+
+            # Sending the SMS
+            message = client.messages.create(
+                to='+919137796495',  # Replace with the number you want to send to
+                from_='+18577676358',  # Replace with your Twilio number
+                body=f'Task "{task.task_name}" has been marked as completed.'
+            )
+            print(f"Message SID: {message.sid}")
+
+        return redirect('event-list')
+
+    return HttpResponse("Task not updated")
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Event
+
+def event_tasks(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    tasks = event.tasks.all()  # Access tasks using the related name 'tasks'
+    return render(request, 'task_list.html', {'event': event, 'tasks': tasks})
+
+
+from django import forms
+from django.contrib.auth.models import User
+from .models import Task
+
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['task_name', 'description', 'assigned_person', 'start_datetime', 'end_datetime']
+
+    assigned_person = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label="Assign to User"
+    )
+
+
+from twilio.rest import Client
+from django.shortcuts import redirect, get_object_or_404
+from . import models  # Make sure to import your models
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
+
+def update_task_view(request, pk):
+    task = get_object_or_404(models.Task, id=pk)
+
+    if request.method == 'POST':
+        # Update the task's completion status
+        task.completed = 'completed' in request.POST
+        task.save()
+
+        # If the task is marked as completed, send a message
+        if task.completed:
+            account_sid = 'ACb604cdff6ba558c3c2b0c563a69a9a02'
+            auth_token = 'fcd5d895f608ed8d9cce2e09311045d4'
+            client = Client(account_sid, auth_token)
+            message = client.messages.create(
+                to= '+919137796495',
+                from_='+18577676358',
+                body=f'MEDSAFE\nDear {task.assigned_person.name}, Your task "{task.task_name}" has been marked as completed!',
+            )
+            print(message.sid)
+
+    return redirect('event-tasks', event_id=task.event.id)  # Redirect back to the tasks list
+
+
+from django.shortcuts import render, redirect
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from django.core.files.storage import FileSystemStorage
+from googleapiclient.http import MediaFileUpload
+import os
+from googleapiclient.errors import HttpError
+
+
+# Define your scopes and service account file
+SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = 'C:\\Users\\Nishant\\Downloads\\service_account.json'
+PARENT_FOLDER_ID = "1-znjTCTeW_Us22GqyvYMlys0AbDi-BMR"
+
+# Function to authenticate user (service account for simplicity)
+def authenticate_user():
+    from google.oauth2.service_account import Credentials
+    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    return creds
+
+# Function to create a new folder on Google Drive
+def create_folder(folder_name, parent_folder_id=PARENT_FOLDER_ID):
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    folder_metadata = {
+        'name': folder_name,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': [parent_folder_id] if parent_folder_id else None
+    }
+
+    try:
+        folder = service.files().create(body=folder_metadata, fields='id').execute()
+        print(f"Folder '{folder_name}' created with ID: {folder.get('id')}")
+        return folder.get('id')
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return None
+
+# Fetch folders from Google Drive
+def list_folders():
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    # Retrieve folders, filtering by parent folder ID if necessary
+    results = service.files().list(
+        q=f"'{PARENT_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.folder'",
+        fields="files(id, name)"
+    ).execute()
+    
+    folders = results.get('files', [])
+    
+    return folders  # Return the folders list to be used in the template
+
+# Upload a photo to the selected folder
+def upload_photo_to_drive(file_path, file_name, folder_id):
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    file_metadata = {
+        'name': file_name,
+        'parents': [folder_id]
+    }
+
+    media = MediaFileUpload(file_path, mimetype='image/png')
+
+    file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+
+    return file.get('id')
+
+# View to handle both folder creation and file upload
+def upload_photo(request):
+    # Get the list of folders
+    folders = list_folders()
+
+    if request.method == 'POST':
+        # Create a new folder
+        if 'create_folder' in request.POST:
+            folder_name = request.POST['folder_name']
+            create_folder(folder_name)
+            return redirect('upload_photo')  # Redirect to 'upload_photo'
+
+        # Handle file uploads
+        elif 'upload_file' in request.POST:
+            selected_folder = request.POST['folder_id']
+            uploaded_files = request.FILES.getlist('file')  # Get the list of uploaded files
+
+            # Process each uploaded file
+            for uploaded_file in uploaded_files:
+                fs = FileSystemStorage()
+                filename = fs.save(uploaded_file.name, uploaded_file)
+                file_path = fs.path(filename)
+
+                # Upload to Google Drive
+                drive_file_id = upload_photo_to_drive(file_path, uploaded_file.name, selected_folder)
+
+                # Optionally, delete the file after upload
+                os.remove(file_path)
+
+            return redirect('upload_photo')  # Redirect to 'upload_photo'
+
+    # Render the upload_photo.html template, passing the folder list
+    return render(request, 'upload_photo.html', {'folders': folders})
+
+
+
+def view_folder_contents(request, folder_id):
+    # Functionality to list files in the specified folder
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    results = service.files().list(
+        q=f"'{folder_id}' in parents",
+        fields="files(id, name)"
+    ).execute()
+    
+    files = results.get('files', [])
+
+    return render(request, 'folder_contents.html', {'files': files, 'folder_id': folder_id})
+
+
+
+
+
+
