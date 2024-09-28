@@ -488,6 +488,137 @@ def download_excel_template(request):
 
 
 
+from django.shortcuts import render, redirect
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from django.core.files.storage import FileSystemStorage
+from googleapiclient.http import MediaFileUpload
+import os
+from googleapiclient.errors import HttpError
+
+
+# Define your scopes and service account file
+SCOPES = ['https://www.googleapis.com/auth/drive']
+SERVICE_ACCOUNT_FILE = 'C:\\Users\\Nishant\\Downloads\\service_account.json'
+PARENT_FOLDER_ID = "1-znjTCTeW_Us22GqyvYMlys0AbDi-BMR"
+
+# Function to authenticate user (service account for simplicity)
+def authenticate_user():
+    from google.oauth2.service_account import Credentials
+    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    return creds
+
+# Function to create a new folder on Google Drive
+def create_folder(folder_name, parent_folder_id=PARENT_FOLDER_ID):
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    folder_metadata = {
+        'name': folder_name,
+        'mimeType': 'application/vnd.google-apps.folder',
+        'parents': [parent_folder_id] if parent_folder_id else None
+    }
+
+    try:
+        folder = service.files().create(body=folder_metadata, fields='id').execute()
+        print(f"Folder '{folder_name}' created with ID: {folder.get('id')}")
+        return folder.get('id')
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        return None
+
+# Fetch folders from Google Drive
+def list_folders():
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    # Retrieve folders, filtering by parent folder ID if necessary
+    results = service.files().list(
+        q=f"'{PARENT_FOLDER_ID}' in parents and mimeType='application/vnd.google-apps.folder'",
+        fields="files(id, name)"
+    ).execute()
+    
+    folders = results.get('files', [])
+    
+    return folders  # Return the folders list to be used in the template
+
+# Upload a photo to the selected folder
+def upload_photo_to_drive(file_path, file_name, folder_id):
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    file_metadata = {
+        'name': file_name,
+        'parents': [folder_id]
+    }
+
+    media = MediaFileUpload(file_path, mimetype='image/png')
+
+    file = service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+
+    return file.get('id')
+
+# View to handle both folder creation and file upload
+def upload_photo(request):
+    # Get the list of folders
+    folders = list_folders()
+
+    if request.method == 'POST':
+        # Create a new folder
+        if 'create_folder' in request.POST:
+            folder_name = request.POST['folder_name']
+            create_folder(folder_name)
+            return redirect('upload_photo')  # Redirect to 'upload_photo'
+
+        # Handle file uploads
+        elif 'upload_file' in request.POST:
+            selected_folder = request.POST['folder_id']
+            uploaded_files = request.FILES.getlist('file')  # Get the list of uploaded files
+
+            # Process each uploaded file
+            for uploaded_file in uploaded_files:
+                fs = FileSystemStorage()
+                filename = fs.save(uploaded_file.name, uploaded_file)
+                file_path = fs.path(filename)
+
+                # Upload to Google Drive
+                drive_file_id = upload_photo_to_drive(file_path, uploaded_file.name, selected_folder)
+
+                # Optionally, delete the file after upload
+                os.remove(file_path)
+
+            return redirect('upload_photo')  # Redirect to 'upload_photo'
+
+    # Render the upload_photo.html template, passing the folder list
+    return render(request, 'upload_photo.html', {'folders': folders})
+
+
+
+def view_folder_contents(request, folder_id):
+    # Functionality to list files in the specified folder
+    creds = authenticate_user()
+    service = build('drive', 'v3', credentials=creds)
+
+    results = service.files().list(
+        q=f"'{folder_id}' in parents",
+        fields="files(id, name)"
+    ).execute()
+    
+    files = results.get('files', [])
+
+    return render(request, 'folder_contents.html', {'files': files, 'folder_id': folder_id})
+
+
+
+
+
+
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task, Event
 from .forms import TaskForm
