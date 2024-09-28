@@ -3,7 +3,7 @@
 {% block content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
+        .dashboard {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
             display: flex;
@@ -11,84 +11,103 @@
             align-items: center;
             justify-content: center;
             margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        
-        h1, h2 {
+
+        .dashboard h1,
+        .dashboard h2 {
             color: #333;
             margin-bottom: 20px;
             text-align: center;
         }
 
-        .chart-container {
+        .dashboard .chart-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-bottom: 40px;
+            width: 100%;
+            max-width: 90vw; /* Max width relative to viewport width */
         }
 
-        .chart-container canvas {
-            border: 2px solid #4bc0c0; /* Add border to canvas */
+        .dashboard .chart-container canvas {
+            width: 100%;
+            max-width: 600px; /* Adjust max width of charts */
+            border: 2px solid #4bc0c0;
             border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             margin: 20px 0;
         }
 
-        /* Container for all sections of the task images */
-        .tasks-section {
+        .dashboard .tasks-section {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Two columns */
-            gap: 20px; /* Spacing between the grid items */
-            justify-items: center; /* Center items in each column */
-            width: 90%; /* Adjust width to keep spacing within limits */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px; /* Limit the width for better responsiveness */
             margin: 0 auto;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
 
-        .tasks-section div {
+        .dashboard .tasks-section div {
             text-align: center;
-            margin: 20px 0;
         }
 
-        .tasks-section img {
-            width: 100%; /* Make images responsive */
-            max-width: 300px; /* Set a max width for images */
+        .dashboard .tasks-section img {
+            width: 100%;
+            max-width: 300px;
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard .chart-container canvas {
+                max-width: 90vw; /* Ensure charts are responsive on smaller screens */
+            }
         }
     </style>
 
-    <div class="chart-container">
-        <h1>Event Registration Statistics</h1>
-        <canvas id="registrationChart" width="600" height="400"></canvas>
-    </div>
+    <div class="dashboard">
+        <div class="chart-container">
+            <h1>Event Registration Statistics</h1>
+            <canvas id="registrationChart"></canvas>
+        </div>
 
-    <div class="chart-container">
-        <h1>Event Attendance Over Time</h1>
-        <canvas id="attendanceChart" width="600" height="400"></canvas>
-    </div>
+        <div class="chart-container">
+            <h1>Event Attendance Over Time</h1>
+            <canvas id="attendanceChart"></canvas>
+        </div>
 
-    <h1>Task Progress</h1>
+        <h1>Task Progress</h1>
 
-    <div class="tasks-section">
-        <div>
-            <h2>Task Completion Over Time</h2>
-            <img src="{% static 'images/task_completion_over_time.png' %}" alt="Task Completion Over Time">
+        <div class="tasks-section">
+            <div>
+                <h2>Task Completion Over Time</h2>
+                <img src="{% static 'images/task_completion_over_time.png' %}" alt="Task Completion Over Time">
+            </div>
+            <div>
+                <h2>Task Distribution by Assigned User</h2>
+                <img src="{% static 'images/task_distribution_donut_chart.png' %}" alt="Task Distribution by Assigned User">
+            </div>
+            <div>
+                <h2>Tasks Assigned to Users</h2>
+                <img src="{% static 'images/tasks_assigned_bar_chart.png' %}" alt="Tasks Assigned to Users">
+            </div>
+            <div>
+                <h2>Task Completion Rate by User</h2>
+                <img src="{% static 'images/task_completion_rate_horizontal.png' %}" alt="Task Completion Rate by User">
+            </div>
+            <div>
+                <h2>Tasks Over Time</h2>
+                <img src="{% static 'images/tasks_over_time_area_chart.png' %}" alt="Tasks Over Time">
+            </div>
         </div>
-        <div>
-            <h2>Task Distribution by Assigned User</h2>
-            <img src="{% static 'images/task_distribution_donut_chart.png' %}" alt="Task Distribution by Assigned User">
-        </div>
-        <div>
-            <h2>Tasks Assigned to Users</h2>
-            <img src="{% static 'images/tasks_assigned_bar_chart.png' %}" alt="Tasks Assigned to Users">
-        </div>
-        <div>
-            <h2>Task Completion Rate by User</h2>
-            <img src="{% static 'images/task_completion_rate_horizontal.png' %}" alt="Task Completion Rate by User">
-        </div>
-        <div>
-            <h2>Tasks Over Time</h2>
-            <img src="{% static 'images/tasks_over_time_area_chart.png' %}" alt="Tasks Over Time">
-        </div>    
     </div>
 
     <script>

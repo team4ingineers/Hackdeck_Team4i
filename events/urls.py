@@ -1,14 +1,15 @@
 from django.urls import path
-
+from django.views.decorators.cache import cache_page  # Import cache_page decorator
 from .views import *
+
 urlpatterns = [
-    path('category-list/', EventCategoryListView.as_view(), name='event-category-list'),
-    path('create-category/', EventCategoryCreateView.as_view(), name='create-event-category'),
-    path('category/<int:pk>/edit/', EventCategoryUpdateView.as_view(), name='edit-event-category'),
-    path('category/<int:pk>/delete/', EventCategoryDeleteView.as_view(), name='delete-event-category'),
-    path('events/category/<int:category_id>/qr/', generate_qr_code, name='generate_qr_code'),
-    path('events/category/google_drive/', upload_photo, name='upload_photo'),
-    path('events/category/google_drive/folder/<str:folder_id>/', view_folder_contents, name='view_folder_contents'),
+    path('category-list/', cache_page(60 * 5)(EventCategoryListView.as_view()), name='event-category-list'),
+    path('create-category/', cache_page(60 * 5)(EventCategoryCreateView.as_view()), name='create-event-category'),
+    path('category/<int:pk>/edit/', cache_page(60 * 5)(EventCategoryUpdateView.as_view()), name='edit-event-category'),
+    path('category/<int:pk>/delete/', cache_page(60 * 5)(EventCategoryDeleteView.as_view()), name='delete-event-category'),
+    path('events/category/<int:category_id>/qr/', cache_page(60 * 5)(generate_qr_code), name='generate_qr_code'),
+    path('events/category/google_drive/', cache_page(60 * 5)(upload_photo), name='upload_photo'),
+    path('events/category/google_drive/folder/<str:folder_id>/', cache_page(60 * 5)(view_folder_contents), name='view_folder_contents'),
 
     path('join/<str:code>/', your_join_view, name='event-category-join'),
     path('event-create/', EventCreateView.as_view(), name='event-create'),

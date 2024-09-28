@@ -13,6 +13,9 @@
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        #google_translate_element {
+            display: none; /* Hide the widget initially */
+        }
         @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap");
     </style>
 </head>
@@ -22,7 +25,7 @@
 <section id="sidebar">
     <a href="#" class="brand">
         <i class='bx bxs-smile'></i>
-        <span class="text">Event</span>
+        <span class="text">EventCrafter</span>
     </a>
     <ul class="side-menu top">
         <li class="{% if request.path == '/dashboard/' %}active{% endif %}">
@@ -79,7 +82,7 @@
             </a>
         </li>
         
-        <li class="{% if '/events/progress/' in request.path %}active{% endif %}">
+        <li class="{% if 'events/tasks/progress/' in request.path %}active{% endif %}">
             <a href="/events/progress/">
                 <i class='bx bxl-product-hunt' ></i>
                 <span class="text">Progress Hub</span>
@@ -133,6 +136,32 @@
                 <i class='bx bxs-bell'></i>
                 <span class="num">1</span>
             </a>
+            <button id="translateBtn" style="background-color: var(--light-blue); border: transparent; padding: 5px; border-radius: 10px;">Translate to Hindi</button>
+    <div id="google_translate_element"></div>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+
+        // Load the Google Translate script
+        function loadGoogleTranslate() {
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.body.appendChild(script);
+        }
+
+        document.getElementById('translateBtn').onclick = function() {
+            // Load Google Translate when the button is clicked
+            loadGoogleTranslate();
+            document.getElementById('google_translate_element').style.display = 'block'; // Show the widget
+        };
+    </script>
+    </script>
             <a href="#" class="profile">
                 <h1>{{ user.username }}!</h1>
             </a>

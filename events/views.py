@@ -955,7 +955,7 @@ def budget(request):
     return render(request, 'budget.html')
 
 def progress(request):
-    return render(request, 'progress.html')
+    return redirect('/events/tasks/progress/')
 
 def vendor(request):
     return render(request, 'vendor.html')

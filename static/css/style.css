@@ -2,6 +2,7 @@
 .index * {
   box-sizing: border-box;
 }
+
 .index {
   background: #ffffff;
   border-radius: 20px;
@@ -499,7 +500,7 @@
   letter-spacing: -0.02em;
   font-weight: 700;
   position: absolute;
-  left: calc(50% - 700px);
+  left: calc(50% - 760px);
   top: calc(50% - 339.5px);
   transition: text-shadow 0.3s ease; /* Smooth transition for hover effect */
   animation: glowAnimation 3s infinite; /* Glow animation on page load */
