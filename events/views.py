@@ -964,3 +964,8 @@ def download_quote(request):
     # Set the path to your generated PDF
     pdf_path = os.path.join('media', 'event_quote.pdf')
     return FileResponse(open(pdf_path, 'rb'), content_type='application/pdf', as_attachment=True, filename='event_quote.pdf')
+
+
+
+def budget(request):
+    return render(request, 'budget.html')
