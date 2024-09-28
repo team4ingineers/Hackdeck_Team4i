@@ -904,3 +904,11 @@ def view_folder_contents(request, folder_id):
 
 
 
+def budget(request):
+    return render(request, 'budget.html')
+
+def progress(request):
+    return render(request, 'progress.html')
+
+def vendor(request):
+    return render(request, 'vendor.html')

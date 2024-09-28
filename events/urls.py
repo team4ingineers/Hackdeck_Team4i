@@ -38,4 +38,7 @@ urlpatterns = [
     path('events/', event_list, name='event-list'),
     path('event/<int:event_id>/tasks/', event_tasks, name='event-tasks'),
     path('task/<int:task_id>/update/', update_task, name='update-task'),
+    path('progress/', progress,name='progress'),
+    path('budget/', progress,name='budget'),
+    path('vendor/', vendor,name='vendor'),
 ]
