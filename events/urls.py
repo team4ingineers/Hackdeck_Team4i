@@ -9,6 +9,7 @@ urlpatterns = [
     path('events/category/<int:category_id>/qr/', generate_qr_code, name='generate_qr_code'),
     path('events/category/google_drive/', upload_photo, name='upload_photo'),
     path('events/category/google_drive/folder/<str:folder_id>/', view_folder_contents, name='view_folder_contents'),
+
     path('join/<str:code>/', your_join_view, name='event-category-join'),
     path('event-create/', EventCreateView.as_view(), name='event-create'),
     path('event-list/', EventListView.as_view(), name='event-list'),

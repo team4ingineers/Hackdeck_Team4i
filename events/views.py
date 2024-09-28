@@ -499,7 +499,7 @@ from googleapiclient.errors import HttpError
 
 # Define your scopes and service account file
 SCOPES = ['https://www.googleapis.com/auth/drive']
-SERVICE_ACCOUNT_FILE = 'C:\\Users\\Nishant\\Downloads\\service_account.json'
+SERVICE_ACCOUNT_FILE = 'C:\\Hackdeck_Team4i\\service_account.json'
 PARENT_FOLDER_ID = "1-znjTCTeW_Us22GqyvYMlys0AbDi-BMR"
 
 # Function to authenticate user (service account for simplicity)
