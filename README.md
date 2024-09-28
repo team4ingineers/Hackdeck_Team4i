@@ -54,4 +54,20 @@ Stay connected without opening the app or website:
 - Optimized for **mobile devices**.
 - Consistent experience across all platforms.
 
+## 📞 **Contact**
+**EventCrafter Team** - team4i.dev@gmail.com  
+**Project Link:** [EventCrafter GitHub](https://github.com/team4ingineers/Hackdeck_team4i)
 
+---
+
+## 🙏 **Acknowledgements**
+- Firebase
+- Html Css Javascript
+- Python
+- Django
+- generative ai
+- twilio
+
+---
+
+Made with ❤️ by the team 4i
