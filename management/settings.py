@@ -160,3 +160,14 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vinishcodes@gmail.com'  # Your Gmail address
 EMAIL_HOST_PASSWORD = 'vepj vatn ustj cjrm'  # Use an app password if 2FA is enabled
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Optional, set default sender
+
+
+
+
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Set the path for the service account JSON file
+SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'service_account.json')
+

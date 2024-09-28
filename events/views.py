@@ -932,19 +932,24 @@ def generate_task_graphs(task_counts):
     plt.savefig(os.path.join('static', 'images', 'task_completion_pie_chart.png'))
     plt.close()
 
+from django.shortcuts import render
+from .models import Task  # Adjust based on your actual model
+
 def task_progress_view(request):
-    tasks = Task.objects.all().values('task_name', 'completed')
+    # Static data for event names and registration counts
+    event_names = ['Event A', 'Event B', 'Event C', 'Event D']
+    registrations = [15, 30, 45, 25]  # Static registration counts
+    attendance_over_time = [10, 20, 35, 40, 50]  # Static attendance data for a line chart
+    days = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5']  # Static days for the line chart
 
-    # Convert the QuerySet to a DataFrame
-    df = pd.DataFrame(tasks)
+    context = {
+        'event_names': event_names,
+        'registrations': registrations,
+        'attendance_over_time': attendance_over_time,
+        'days': days,
+    }
+    return render(request, 'task_progress.html', context)
 
-    # Count completed and not completed tasks
-    task_counts = df['completed'].value_counts().rename({True: 'Completed', False: 'Not Completed'})
-
-    # Generate graphs
-    generate_task_graphs(task_counts)
-
-    return render(request, 'task_progress.html', {'df': df, 'task_counts': task_counts})
 
 def budget(request):
     return render(request, 'budget.html')
