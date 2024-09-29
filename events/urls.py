@@ -1,6 +1,6 @@
 from django.urls import path
-
 from .views import *
+
 urlpatterns = [
     path('category-list/', EventCategoryListView.as_view(), name='event-category-list'),
     path('create-category/', EventCategoryCreateView.as_view(), name='create-event-category'),
@@ -9,7 +9,6 @@ urlpatterns = [
     path('events/category/<int:category_id>/qr/', generate_qr_code, name='generate_qr_code'),
     path('events/category/google_drive/', upload_photo, name='upload_photo'),
     path('events/category/google_drive/folder/<str:folder_id>/', view_folder_contents, name='view_folder_contents'),
-
     path('join/<str:code>/', your_join_view, name='event-category-join'),
     path('event-create/', EventCreateView.as_view(), name='event-create'),
     path('event-list/', EventListView.as_view(), name='event-list'),
@@ -26,22 +25,21 @@ urlpatterns = [
     path('search_category/', search_event_category, name='search-event-category'),
     path('search_event/', search_event, name='search-event'),
     path('create/', create_event, name='create'),
-    path('event_catogery/',event_catogery, name='event_catogery'),
-    path('events_dashboard/',events_dashboard, name='events_dashboard'),
-    path('gemini/',gemini, name='gemini'),
-    path('group_discussion/',group_discussion, name='group_discussion'),
+    path('event_catogery/', event_catogery, name='event_catogery'),
+    path('events_dashboard/', events_dashboard, name='events_dashboard'),
+    path('gemini/', gemini, name='gemini'),
+    path('group_discussion/', group_discussion, name='group_discussion'),
     path('upload_invitation/', upload_invitation, name='upload_invitation'),
     path('download-excel-template/', download_excel_template, name='download_excel_template'),
     path('task/create/<int:event_id>', create_task, name='create-task'),
     path('task/update/<int:task_id>', update_task_completion, name='update-task-completion'),
-    path('tasks',task_view,name='task_view'),
-    path('event/<int:event_id>/', event_detail, name='event-detail'),
+    path('tasks', task_view, name='task_view'),
     path('events/', event_list, name='event-list'),
     path('event/<int:event_id>/tasks/', event_tasks, name='event-tasks'),
     path('task/<int:task_id>/update/', update_task, name='update-task'),
     path('tasks/progress/', task_progress_view, name='task-progress'),
-    path('progress/', progress,name='progress'),
-    path('budget/', budget,name='budget'),
-    path('vendor/', vendor,name='vendor'),
-     path('download-quote/', download_quote, name='download_quote'),
+    path('progress/', progress, name='progress'),
+    path('budget/', budget, name='budget'),
+    path('vendor/', vendor, name='vendor'),
+    path('download-quote/', download_quote, name='download_quote'),
 ]
