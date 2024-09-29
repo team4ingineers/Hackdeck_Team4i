@@ -24,6 +24,19 @@
         height: 100%;
         border: none; /* Remove default iframe border */
     }
+
+    /* Mobile Responsiveness */
+    @media only screen and (max-width: 768px) {
+        .iframe-container {
+            padding-top: 75%; /* Adjust aspect ratio for smaller screens */
+        }
+    }
+
+    @media only screen and (max-width: 480px) {
+        .iframe-container {
+            padding-top: 100%; /* Aspect ratio for very small screens */
+        }
+    }
 </style>
 
 {% endblock content %}

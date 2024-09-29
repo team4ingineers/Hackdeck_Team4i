@@ -10,7 +10,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 
 def home(request):
-    return render(request,'index.html')
+    return render(request,'login.html')
 
 
 
